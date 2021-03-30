@@ -1,3 +1,11 @@
+<% if @promotion.errors.any? %>
+  <ul>
+    <% @promotion.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+
 <%= form_with model: @promotion do |f| %>
   <%= f.label :name, 'Nome' %>
   <%= f.text_field :name %>
