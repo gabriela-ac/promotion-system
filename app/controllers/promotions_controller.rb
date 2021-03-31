@@ -1,4 +1,6 @@
 class PromotionsController < ApplicationController
+  before_action :authenticate_user!, only: %i[index show]
+
   def index
     @promotions = Promotion.all
   end
