@@ -22,4 +22,18 @@ feature 'Admin generates coupons' do
     expect(page).to have_content('Cupons gerados com sucesso')
     expect(page).not_to have_link('Emitir cupons')
   end
+
+  scenario 'and coupons are already generated' do
+    promotion = Promotion.create!(name: 'Pascoa', coupon_quantity: 5, 
+                                  discount_rate: 10, code: 'PASCOA10', 
+                                  expiration_date: 1.day.from_now)
+    promotion.coupons.create(code: 'ABCD')
+    user = User.create!(email: 'jane_doe@locaweb.com.br', password: '123456')
+
+    login_as user, scope: :user
+    visit promotion_path(promotion)
+    
+    expect(page).not_to have_link('Emitir cupons')
+    expect(page).to have_content('ABCD')
+  end
 end

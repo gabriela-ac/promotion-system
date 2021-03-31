@@ -5,12 +5,20 @@ class Promotion < ApplicationRecord
                    :coupon_quantity, :expiration_date,
                    presence: true
   validates :code, uniqueness: true
+  validates :coupon_quantity, numericality: { greater_than: 0 }
 
   def generate_coupons!
-    codes = (1..coupon_quantity).map do |number|
-      { code: "#{code}-#{'%04d' % number}" }
-    end
-    coupons.create!(codes)
+    raise 'Cupons já foram gerados' if coupons.any?
+
+    coupons.create!(generate_coupons_codes)
+  end
+end
+
+private
+
+def generate_coupons_codes
+  codes = (1..coupon_quantity).map do |number|
+    { code: "#{code}-#{'%04d' % number}" }
   end
 end
 

@@ -28,4 +28,36 @@ describe Promotion do
       expect(promotion.errors[:code]).to include('já está em uso')
     end
   end
+
+  context '#generate_coupons!' do
+    it 'of a promotion without coupons' do
+      promotion = Promotion.create!(name: 'Pascoa', coupon_quantity: 5, 
+                                    discount_rate: 10, code: 'PASCOA10', 
+                                    expiration_date: 1.day.from_now)
+
+      promotion.generate_coupons!
+
+      expect(promotion.coupons.count).to eq(5)
+      expect(promotion.coupons.map(&:code)).to include(
+        'PASCOA10-0001', 'PASCOA10-0002', 'PASCOA10-0003', 'PASCOA10-0004', 'PASCOA10-0005')
+      expect(promotion.coupons.map(&:code)).not_to include(
+        'PASCOA10-0000', 'PASCOA10-0006')
+    end
+
+    it 'and coupons already generated' do
+      promotion = Promotion.create!(name: 'Pascoa', coupon_quantity: 5, 
+                                    discount_rate: 10, code: 'PASCOA10', 
+                                    expiration_date: 1.day.from_now)
+
+      promotion.generate_coupons!
+
+      expect { promotion.generate_coupons! }.to raise_error('Cupons já foram gerados')
+
+      expect(promotion.coupons.count).to eq(5)
+      expect(promotion.coupons.map(&:code)).to include(
+        'PASCOA10-0001', 'PASCOA10-0002', 'PASCOA10-0003', 'PASCOA10-0004', 'PASCOA10-0005')
+      expect(promotion.coupons.map(&:code)).not_to include(
+        'PASCOA10-0000', 'PASCOA10-0006')
+    end
+  end
 end
