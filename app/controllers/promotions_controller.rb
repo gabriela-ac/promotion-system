@@ -1,13 +1,12 @@
 class PromotionsController < ApplicationController
   before_action :authenticate_user!, only: %i[index show]
+  before_action :set_promotion, only: %i[show generate_coupons]
 
   def index
     @promotions = Promotion.all
   end
 
-  def show
-    @promotion = Promotion.find(params[:id])
-  end
+  def show; end
 
   def new
     @promotion = Promotion.new
@@ -23,13 +22,8 @@ class PromotionsController < ApplicationController
   end
 
   def generate_coupons
-    @promotion = Promotion.find(params[:id])
-    (1..@promotion.coupon_quantity).each do |number|
-      code = "#{@promotion.code}-#{'%04d' % number}"
-      Coupon.create!(promotion: @promotion, code: code)
-    end
+    @promotion.generate_coupons!
     flash[:success] = 'Cupons gerados com sucesso'
-
     redirect_to @promotion
   end
 
@@ -39,5 +33,9 @@ class PromotionsController < ApplicationController
     params
       .require(:promotion)
       .permit(:name, :description, :code, :discount_rate, :expiration_date, :coupon_quantity)
+  end
+
+  def set_promotion
+    @promotion = Promotion.find(params[:id])
   end
 end
