@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Admin generates coupons' do
-  xscenario 'with coupon quantity available' do
+  scenario 'with coupon quantity available' do
     promotion = Promotion.create!(name: 'Pascoa', coupon_quantity: 5, 
                                   discount_rate: 10, code: 'PASCOA10', 
                                   expiration_date: 1.day.from_now)
@@ -13,7 +13,7 @@ feature 'Admin generates coupons' do
     click_on promotion.name
     click_on 'Emitir cupons'
     
-    expect(current_page).to eq(promotions_path(promotion))
+    expect(current_path).to eq(promotion_path(promotion))
     expect(page).to have_content('PASCOA10-0001')
     expect(page).to have_content('PASCOA10-0002')
     expect(page).to have_content('PASCOA10-0003')

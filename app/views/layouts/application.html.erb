@@ -22,6 +22,9 @@
     </nav>
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
+    <% if flash[:success] %>
+      <p><%= flash[:success] %></p>
+    <% end %>
     <%= yield %>
   </body>
 </html>
