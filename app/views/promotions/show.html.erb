@@ -23,5 +23,6 @@
       <dt>Código</dt>
       <dd><%= coupon.code %></dd>
     </dl>
+    <%= link_to 'Descartar cupom', inactivate_coupon_path(coupon), method: :post %>
   <% end %>
 <% end %>
